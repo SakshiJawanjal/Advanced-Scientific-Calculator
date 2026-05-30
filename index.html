@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Feature Advanced Calculator</title>
+    <style>
+        /* CSS: Setup variables for easy theme switching */
+        :root {
+            --bg-body: #f0f2f5;
+            --bg-calc: #22252d;
+            --bg-display: #2a2f3b;
+            --text-display: #ffffff;
+            --bg-btn: #292d36;
+            --text-btn: #ffffff;
+            --color-op: #ff5757;
+            --color-fn: #26e6a3;
+        }
+
+        .light-theme {
+            --bg-body: #e5e5e5;
+            --bg-calc: #ffffff;
+            --bg-display: #f5f5f5;
+            --text-display: #22252d;
+            --bg-btn: #f9f9f9;
+            --text-btn: #22252d;
+            --color-op: #ff5757;
+            --color-fn: #00b37e;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: var(--bg-body);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            transition: background 0.3s;
+        }
+
+        /* Theme Toggle Button */
+        .theme-btn {
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            background-color: var(--bg-calc);
+            color: var(--text-display);
+            font-weight: bold;
+        }
+
+        .calculator {
+            background-color: var(--bg-calc);
+            padding: 25px;
+            border-radius: 25px;
+            box-shadow: 0px 10px 30px rgba(0,0,0,0.15);
+            width: 340px;
+            transition: background 0.3s;
+        }
+
+        #display {
+            width: 100%;
+            height: 70px;
+            background-color: var(--bg-display);
+            border: none;
+            border-radius: 12px;
+            color: var(--text-display);
+            font-size: 2.2rem;
+            text-align: right;
+            padding: 15px;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        button {
+            padding: 18px;
+            font-size: 1.3rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            background-color: var(--bg-btn);
+            color: var(--text-btn);
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .operator { color: var(--color-op); }
+        .function { color: var(--color-fn); }
+        
+        .equal {
+            background-color: var(--color-fn);
+            color: white;
+            grid-column: span 2;
+        }
+    </style>
+</head>
+<body>
+
+    <button class="theme-btn" onclick="toggleTheme()">☀️ / 🌙 Toggle Theme</button>
+
+    <div class="calculator">
+        <input type="text" id="display" readonly placeholder="0">
+        <div class="buttons">
+            <!-- Row 1: Clear, Backspace, Percentage, Division -->
+            <button class="function" onclick="clearDisplay()">C</button>
+            <button class="function" onclick="backspace()">⌫</button>
+            <button class="function" onclick="percentage()">%</button>
+            <button class="operator" onclick="appendValue('/')">÷</button>
+            
+            <!-- Row 2: Square, Square Root, Toggle Sign, Multiplication -->
+            <button class="function" onclick="square()">x²</button>
+            <button class="function" onclick="sqrt()">√</button>
+            <button class="function" onclick="toggleSign()">±</button>
+            <button class="operator" onclick="appendValue('*')">×</button>
+            
+            <!-- Standard Numbers and Basic Operators -->
+            <button onclick="appendValue('7')">7</button>
+            <button onclick="appendValue('8')">8</button>
+            <button onclick="appendValue('9')">9</button>
+            <button class="operator" onclick="appendValue('-')">-</button>
+            
+            <button onclick="appendValue('4')">4</button>
+            <button onclick="appendValue('5')">5</button>
+            <button onclick="appendValue('6')">6</button>
+            <button class="operator" onclick="appendValue('+')">+</button>
+            
+            <button onclick="appendValue('1')">1</button>
+            <button onclick="appendValue('2')">2</button>
+            <button onclick="appendValue('3')">3</button>
+            <button onclick="appendValue('.')">.</button>
+            
+            <button onclick="appendValue('0')">0</button>
+            <button class="equal" onclick="calculateResult()">=</button>
+        </div>
+    </div>
+
+    <script>
+        const display = document.getElementById('display');
+
+        // Feature 1: Dark / Light Mode Toggle
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+        }
+
+        function appendValue(input) {
+            display.value += input;
+        }
+
+        function clearDisplay() {
+            display.value = '';
+        }
+
+        // Feature 2: Backspace (Delete last character)
+        function backspace() {
+            display.value = display.value.slice(0, -1);
+        }
+
+        // Feature 3: Percentage Calculation
+        function percentage() {
+            if (display.value) {
+                display.value = parseFloat(display.value) / 100;
+            }
+        }
+
+        // Feature 4: Square a number (x * x)
+        function square() {
+            if (display.value) {
+                display.value = Math.pow(parseFloat(display.value), 2);
+            }
+        }
+
+        // Feature 5: Square Root (√)
+        function sqrt() {
+            if (display.value) {
+                display.value = Math.sqrt(parseFloat(display.value));
+            }
+        }
+
+        // Feature 6: Toggle Positive/Negative (+/-)
+        function toggleSign() {
+            if (display.value) {
+                display.value = parseFloat(display.value) * -1;
+            }
+        }
+
+        function calculateResult() {
+            try {
+                // Evaluates basic math expressions
+                if (display.value) {
+                    display.value = eval(display.value);
+                }
+            } catch (error) {
+                display.value = "Error";
+            }
+        }
+    </script>
+
+</body>
+</html>
